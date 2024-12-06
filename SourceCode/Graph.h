@@ -14,9 +14,7 @@ class Graph{
         list<int> friends;
         set<int> pending;
         set<int> requests;
-        User(string username , string password , int age):username(username),password(password),age(age){
-
-        }
+        User(string username , string password , int age):username(username),password(password),age(age){}
 
     
       
@@ -29,8 +27,7 @@ class Graph{
     void removeFriend();
     int select();
     void BFS(User user , map<int,int> & Visited);
-    void DFS();
-    void viewByName();
+    void search(string username);
     void peopleYouMayKnow(User user);
 };
 
