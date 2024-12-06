@@ -5,6 +5,7 @@
 #include <map>
 #include <queue>
 #include "Graph.h"
+# include <string>
 using namespace std;
 
 void Graph :: BFS(User user , map<int,int> &Visited){
@@ -37,6 +38,21 @@ void Graph :: BFS(User user , map<int,int> &Visited){
         }
         
     }
+}
+void Graph :: search(string search){
+    deque <int> searchResults;
+    cout << "Search result" << endl;
+    cout << "-----------------------"<< endl;
+    bool found = false;
+    for(int i = 0 ; i < users.size() ; i++){
+        if(users[i].username.find(search)!= string :: npos){
+            cout << searchResults.size()+1 << " : " << users[i].username << endl;
+            searchResults.push_back(i);
+            found = true;
+        }
+    }
+    if(!found)
+        cout << "No search results found";
 }
 void Graph :: peopleYouMayKnow(User user){
     if(user.friends.empty())
