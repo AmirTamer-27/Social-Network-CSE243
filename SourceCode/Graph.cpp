@@ -5,13 +5,14 @@
 #include <map>
 #include <queue>
 #include "Graph.h"
+#include "hed.h"
 # include <string>
 using namespace std;
 
-void Graph :: BFS(User user , map<int,int> &Visited){
-    queue <int> frontier;
-    for(auto it = user.friends.begin() ; it!=user.friends.end() ;it++)
-        frontier.push(*it);
+void Graph :: BFS(User user , CustomMap &Visited){
+    Dequeue <int> frontier;
+    for (auto it = user.friends.begin(); it != 0;it=it->next)
+        frontier.push_back(it->data);
     
     int degree = 1;
     int n = 0;
