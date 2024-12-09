@@ -2,7 +2,7 @@
 #define QUEUE
 
 // #define SQUEUE
- #define DQUEUE
+#define DQUEUE
 //#define LLQUEUE
 #include <iostream>
 #include <algorithm>
@@ -14,7 +14,7 @@ template <typename QueueElement>
 class Dequeue {
 
 public:
-    Dequeue(int numElements = DEFAULT_CAPACITY) : myFront(0), myBack(0) ,mySize(0){
+    Dequeue(int numElements = DEFAULT_CAPACITY) : myFront(0), myBack(0), mySize(0) {
         if (numElements <= 0) {
             cerr << "Error: Negative or zero capacity required -- terminating execution\n";
             exit(1);
@@ -26,7 +26,7 @@ public:
             exit(1);
         }
     }
-    Dequeue(const Dequeue& original) : myFront(original.myFront), myBack(original.myBack), myCapacity(original.myCapacity),mySize(original.mySize) {
+    Dequeue(const Dequeue& original) : myFront(original.myFront), myBack(original.myBack), myCapacity(original.myCapacity), mySize(original.mySize) {
         myArray = new (nothrow) QueueElement[myCapacity];
         if (myArray == 0) {
             cerr << "Error: Inadequate memory to allocate queue -- terminating execution\n";
@@ -129,7 +129,7 @@ public:
         else {
             cerr << "Dequeue Empty!" << endl;
         }
-        }
+    }
     void push_front(const QueueElement& value) {
         int newFront;
         if ((myFront - 1) < 0)
@@ -140,7 +140,7 @@ public:
             myFront = newFront;
             myArray[myFront] = value;
             mySize++;
-            
+
         }
         else {
             cerr << "Dequeue-full! " << endl;
@@ -150,7 +150,7 @@ public:
     QueueElement get(int i)
     {
         int index = (myFront + i) % myCapacity;
-        if(index>=myFront and index<myBack)
+        if (index >= myFront and index < myBack)
             return myArray[(myFront + i) % myCapacity];
         else {
             cerr << "index out of bound" << endl;
@@ -177,7 +177,7 @@ private:
 #ifdef SQUEUE
     QueueElement myArray[DEFAULT_CAPACITY];
 #else
-    
+
 #endif
 
 
@@ -201,16 +201,16 @@ ostream& operator<< (ostream& out, const Dequeue<QueueElement>& aList) {
 }
 template class Dequeue<int>;
 template class Dequeue<User>;
-template ostream& operator<<(ostream& out,const Dequeue<int>& aList);
-template <typename KeyType, typename ValueType>
-bool pairCompare(const Pair<KeyType, ValueType>& a, const Pair<KeyType, ValueType>& b) {
+template ostream& operator<<(ostream& out, const Dequeue<int>& aList);
+typedef int KeyType;
+typedef int ValueType;
+bool pairCompare(const pair<KeyType, ValueType>& a, const pair<KeyType, ValueType>& b) {
     return a.first < b.first;
 }
 #endif /* QUEUE */
 #ifndef MAP_CUSTOM_H
 #define MAP_CUSTOM_H
-typedef int KeyType;
-typedef int ValueType;
+
 const int DEFAULT_CAPACITY_map = 10000;
 class CustomMap {
 private:
@@ -221,13 +221,13 @@ private:
 public:
     CustomMap(int numElements = DEFAULT_CAPACITY) {
         myCapacity = numElements;
-       data = new (nothrow) pair<KeyType, ValueType>[myCapacity];
-       mySize = 0;
+        data = new (nothrow) pair<KeyType, ValueType>[myCapacity];
+        mySize = 0;
 
     }
     void insert(const KeyType& key, const ValueType& value) //value will be added to the initial value
     {
-        sort(data, data + mySize, pairCompare<int, int>);
+        sort(data, data + mySize-1, pairCompare);
         int l = 0, r = mySize - 1, m;
         while (l <= r)
         {
@@ -235,7 +235,7 @@ public:
             if (data[m].first < key)
             {
                 l = m + 1;
-                
+
             }
             else if (data[m].first > key)
                 r = m - 1;
@@ -245,7 +245,7 @@ public:
                 return;
             }
         }
-        
+
         if (myCapacity > mySize)
         {
             data[mySize].first = key;
@@ -253,21 +253,21 @@ public:
             mySize++;
         }
     }
-    bool contains(const KeyType& key)  {
-        sort(data, data + mySize, pairCompare<int, int>);
-        int l = 0, r = mySize - 1,m;
-       while(l<=r)
-       {
-           m = (l + r) / 2;
-           if (data[m].first < key)
-           {
-               l = m + 1;
-           }
-           else if (data[m].first > key)
-               r = m - 1;
+    bool contains(const KeyType& key) {
+        sort(data, data + mySize - 1, pairCompare);
+        int l = 0, r = mySize - 1, m;
+        while (l <= r)
+        {
+            m = (l + r) / 2;
+            if (data[m].first < key)
+            {
+                l = m + 1;
+            }
+            else if (data[m].first > key)
+                r = m - 1;
             else
                 return true;
-       }
+        }
         return false;
     }
     ValueType second(int i)
@@ -278,7 +278,7 @@ public:
         }
     }
     const ValueType& at(const KeyType& key) const {
-        sort(data, data + mySize, pairCompare<int, int>);
+        sort(data, data + mySize - 1, pairCompare);
         int l = 0, r = mySize - 1, m;
         while (l <= r)
         {
@@ -291,20 +291,20 @@ public:
                 r = m - 1;
             else
             {
-                
+
                 return data[m].second;
             }
         }
-        
-            cerr<<"Key not found";
-        
+
+        cerr << "Key not found";
+
     }
     void display(ostream& out) const {
-        if (mySize==0) {
+        if (mySize == 0) {
             cerr << "Map-empty!" << endl;
             return;
         }
-        for (int i = 0;i < mySize;i++)
+        for (int i = 0; i < mySize; i++)
         {
             out << "key: " << data[i].first << " value: " << data[i].second << " ";
         }
@@ -396,7 +396,7 @@ public:
         }
         return mytop->value;
     }
-    type2 top2()  {
+    type2 top2() {
         if (empty()) {
             cerr << "nothing in top\n";
             type2 garbage = NULL;
