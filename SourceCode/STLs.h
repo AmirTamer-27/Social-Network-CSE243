@@ -6,6 +6,7 @@
 //#define LLQUEUE
 #include <iostream>
 #include <algorithm>
+#include <string>
 #include <iomanip>
 #include "User.h"
 using namespace std;
@@ -227,7 +228,7 @@ public:
     }
     void insert(const KeyType& key, const ValueType& value) //value will be added to the initial value
     {
-        sort(data, data + mySize-1, pairCompare);
+        sort(data, data + mySize - 1, pairCompare);
         int l = 0, r = mySize - 1, m;
         while (l <= r)
         {
@@ -572,60 +573,60 @@ ostream& operator<<(ostream& out, const LinkedList& aList)
 }
 #ifndef HTable_hpp
 #define HTable_hpp
-#include <string>
-#include <iostream>
+
 using namespace std;
 
-const int TableSize = 100;
+const int TableSize = 16383;
 
 class HashTable {
+
 private:
+    typedef int HashElement;
     class Node {
     public:
-        string key; // Student ID
-        string value; // Student name
+        HashElement value; // Student name
         Node* next;
         Node() {
             next = nullptr;
-            this->value = "-1";
+            this->value = -1;
         }
-        Node(string value, string key) {
+        Node(HashElement value) {
             next = nullptr;
             this->value = value;
-            this->key = key;
         }
     };
 
     int numberOfElements;
     Node* table[TableSize];
-    int hash(string key) {
-        int sum = 0;
-        for (int k = 0; k < key.length(); k++)
-            sum = sum + int(key[k]);
-        return  sum % TableSize;
+    int hash(HashElement value) {
+        return value % TableSize;
     }
 public:
     HashTable() :numberOfElements(0) {
         for (int i = 0; i < TableSize; i++)
             table[i] = new Node();
     }
-    void insert(string studentID, string studentName) {
-        int loc = hash(studentID);
-        if (table[loc]->value == "-1") {
-            table[loc]->value = studentName;
-            table[loc]->key = studentID;
+    void insert(HashElement value) {
+        int loc = hash(value);
+        if (table[loc]->value == value) {
+            cerr << "Item already exists";
+            return;
+        }
+        if (table[loc]->value == -1) {
+            table[loc]->value = value;
+            numberOfElements++;
         }
         else {
             Node* ptr = table[loc];
             while (ptr->next != nullptr)
                 ptr = ptr->next;
-            ptr->next = new Node(studentName, studentID);
+            ptr->next = new Node(value);
         }
     }
 
-    void remove(string studentID) {
-        int loc = hash(studentID);
-        if (table[loc]->key == studentID) {
+    void remove(HashElement value) {
+        int loc = hash(value);
+        if (table[loc]->value == value) {
             Node* ptr = table[loc]->next;
             delete table[loc];
             table[loc] = ptr;
@@ -633,8 +634,8 @@ public:
         else {
             Node* pred;
             Node* ptr = table[loc];
-            while (ptr->key != studentID && ptr != nullptr) {
-                pred = table[loc];
+            while (ptr != nullptr && ptr->value != value) {
+                pred = ptr;
                 ptr = ptr->next;
             }
             if (ptr == nullptr) {
@@ -649,7 +650,7 @@ public:
     }
     void print() {
         for (int i = 0; i < TableSize; i++) {
-            if (table[i]->value != "-1") {
+            if (table[i]->value != -1) {
                 cout << table[i]->value << " ";
             }
             Node* ptr = table[i]->next;
@@ -657,7 +658,7 @@ public:
                 cout << ptr->value;
                 ptr = ptr->next;
             }
-            if (table[i]->value != "-1") {
+            if (table[i]->value != -1) {
                 cout << endl;
             }
         }
