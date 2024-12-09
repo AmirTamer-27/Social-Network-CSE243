@@ -226,6 +226,9 @@ public:
         mySize = 0;
 
     }
+    int size() {
+        return mySize;
+    }
     void insert(const KeyType& key, const ValueType& value) //value will be added to the initial value
     {
         sort(data, data + mySize - 1, pairCompare);
