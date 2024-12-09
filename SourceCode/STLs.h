@@ -281,6 +281,14 @@ public:
             return data[i].second;
         }
     }
+    KeyType first(int i)
+    {
+        if (mySize > i)
+        {
+            return data[i].first;
+        }
+        
+    }
     const ValueType& at(const KeyType& key) const {
         sort(data, data + mySize - 1, pairCompare);
         int l = 0, r = mySize - 1, m;
@@ -576,9 +584,6 @@ ostream& operator<<(ostream& out, const LinkedList& aList)
 }
 #ifndef HTable_hpp
 #define HTable_hpp
-
-using namespace std;
-
 const int TableSize = 16383;
 
 class HashTable {
@@ -651,20 +656,33 @@ public:
             }
         }
     }
-    void print() {
+    void print(Dequeue<User> users) {
+        int count = 1;
         for (int i = 0; i < TableSize; i++) {
-            if (table[i]->value != -1) {
-                cout << table[i]->value << " ";
-            }
-            Node* ptr = table[i]->next;
-            while (ptr != nullptr) {
-                cout << ptr->value;
-                ptr = ptr->next;
-            }
-            if (table[i]->value != -1) {
-                cout << endl;
+            if (table[i]->value == -1)
+                continue;
+            cout << count << ": " << users.get(table[i]->value).getUsername() << endl;
+            count++;
+            if (table[i]->next != nullptr) {
+                Node* ptr = table[i]->next;
+                while (ptr != nullptr) {
+                    cout << count << " : " << ptr->value << endl;
+                    count++;
+                    ptr = ptr->next;
+                }
             }
         }
+    }
+    bool found(HashElement value) {
+        if (table[hash(value)]->value == -1)
+            return false;
+        Node* ptr = table[hash(value)];
+        while (ptr != nullptr) {
+            if (ptr->value == value)
+                return true;
+            ptr = ptr->next;
+        }
+        return false;
     }
 };
 
