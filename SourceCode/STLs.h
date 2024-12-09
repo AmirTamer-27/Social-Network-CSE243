@@ -235,6 +235,7 @@ public:
             if (data[m].first < key)
             {
                 l = m + 1;
+                
             }
             else if (data[m].first > key)
                 r = m - 1;
@@ -269,7 +270,13 @@ public:
        }
         return false;
     }
-
+    ValueType second(int i)
+    {
+        if (mySize > i)
+        {
+            return data[i].second;
+        }
+    }
     const ValueType& at(const KeyType& key) const {
         sort(data, data + mySize, pairCompare<int, int>);
         int l = 0, r = mySize - 1, m;
