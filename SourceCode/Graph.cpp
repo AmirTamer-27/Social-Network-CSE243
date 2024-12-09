@@ -6,7 +6,7 @@
 #include <queue>
 #include "Graph.h"
 #include "STLs.h"
-# include <string>
+#include <string>
 using namespace std;
 
 void Graph :: BFS(User user , CustomMap &Visited){
@@ -92,4 +92,17 @@ void Graph :: peopleYouMayKnow(User user){
         mayKnow.pop();
     }
 
+}
+void Graph :: handleRequests(int currUser){
+    users.get(currUser).getRequests().print();
+    cout << "Select the friend you want to view";
+    int index; 
+    cin >> index;
+    User user = users.get()
+
+
+}
+void Graph :: viewRequests(int currUser){
+    users.get(currUser).getRequests.print(users);
+    
 }
