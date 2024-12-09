@@ -6,7 +6,7 @@
 #include <queue>
 #include "Graph.h"
 #include "STLs.h"
-#include <string>
+# include <string>
 using namespace std;
 
 void Graph :: BFS(User user , CustomMap &Visited){
@@ -20,16 +20,16 @@ void Graph :: BFS(User user , CustomMap &Visited){
     int compareN = frontier.size();
     while(!frontier.empty() && degree < 5){
         int popped = frontier.front();
-        frontier.pop();
+        frontier.pop_front();
         if(degree == 2)
-            Visited[popped]++;
-        else if (Visited[popped]==0){
-                Visited[popped]--;
+            Visited.insert(popped,1);
+        else if (Visited.contains(popped) == false) {
+                Visited.insert(popped, 1-degree);
         }
         
-        for( auto it = users[popped].getfriends().begin(); it!=users[popped].getfriends().end() ; it++){
-            if(Visited[*it]==0 && (user.getusername() != users[*it].getusername() && user.getpassword() != users[*it].getpassword()))
-                frontier.push(*it);
+        for( auto it = users.get(popped).getfriends().begin(); it != 0; it->next) {
+            if(Visited.contains(it->data) == false && (user.getusername() != users.get(it->data).getusername() && user.getpassword() != users.get(it->data).getpassword()))
+                frontier.push_back(it->data);
         }
         n++;
         if(n==compareN){
@@ -41,13 +41,13 @@ void Graph :: BFS(User user , CustomMap &Visited){
     }
 }
 void Graph :: search(string search){
-    deque <int> searchResults;
+    Dequeue <int> searchResults;
     cout << "Search result" << endl;
     cout << "-----------------------"<< endl;
     bool found = false;
     for(int i = 0 ; i < users.size() ; i++){
-        if(users[i].getusername().find(search)!= string :: npos){
-            cout << searchResults.size()+1 << " : " << users[i].getusername() << endl;
+        if(users.get(i).getusername().find(search) != string::npos) {
+            cout << searchResults.size()+1 << " : " << users.get(i).getusername() << endl;
             searchResults.push_back(i);
             found = true;
         }
@@ -61,48 +61,67 @@ void Graph :: peopleYouMayKnow(User user){
         cerr<<"shoflak so7ab"<<endl;
         return;
     }
-    map<int,int> Visited;
+    CustomMap Visited;
     BFS(user,Visited);
-    priority_queue<pair<int,int>> mayKnow;
-    for(auto it:Visited)
+    Priority_Queue<int, int> mayKnow;
+    for(int i=0;i<Visited.size();i++)
     {
-        if(it.second)
+        if(Visited.second(i) !=0)
         {
             bool found=false;
-            for(auto it2=user.getfriends().begin();it2!=user.getfriends().end();it2++){
-                if(*it2==it.first)
+            for(auto it2=user.getfriends().begin();it2!=0;it2->next){
+                if(it2->data== Visited.first(i))
                 {
                     found=true;
                     break;
                 }
             }
-            if(!found && !user.getPending().count(it.first) && !user.getRequests().count(it.first))
-                mayKnow.push(make_pair(it.second,it.first));
+           
+            if(!found && !user.getPending().found(Visited.first(i)) && !user.getRequests().found(Visited.first(i)))
+                mayKnow.push(Visited.second(i), Visited.first(i));
         }
     }
     cout<<"People you may know:"<<endl;
     while(!mayKnow.empty())
     {
-        cout<<users[mayKnow.top().second].getusername()<<" ";
-        if(mayKnow.top().first>0)
+        cout<<users.get(mayKnow.top2()).getusername()<<" ";
+        if(mayKnow.top1()>0)
         {
-            cout<<"mutual friend: "<<mayKnow.top().first;
+            cout<<"mutual friend: "<<mayKnow.top1();
         }
         cout<<"\n";
         mayKnow.pop();
     }
 
 }
-void Graph :: handleRequests(int currUser){
-    users.get(currUser).getRequests().print();
-    cout << "Select the friend you want to view";
-    int index; 
-    cin >> index;
-    User user = users.get()
 
+void Graph::send_request(const int current, const int index) {
+    HashTable extra = users.get(index).getRequests();
 
+    HashTable extra1 = users.get(index).getPending();
+
+    extra.insert(current);
+    extra1.insert(index);
+
+    /*
+
+    if (extra[hash(index)].getusername() == "-1") {
+
+        return;
+    }
+    else {
+        NodePointer ptr = extra[hash(index)];
+        while (ptr != 0) {
+            if (extra[hash(index)].getusername() == users[index].getusername()) {
+                users[index].getRequests().insert(index);
+                return;
+            }
+            ptr = ptr->next;
+        }
+    }
+    */
 }
-void Graph :: viewRequests(int currUser){
-    users.get(currUser).getRequests.print(users);
-    
+
+void Graph::removeFriend(const int current, const int index) {
+    users.get(current).getfriends().erase(index);
 }
