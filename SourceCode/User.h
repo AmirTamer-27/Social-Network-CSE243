@@ -7,11 +7,11 @@ private:
     string password;
     int age;
     LinkedList friends;
-    set<int> pending;
-    set<int> requests;
+    HashTable pending;
+    HashTable requests;
 public:
     User(string username, string password, int age) :username(username), password(password), age(age) {}
-    LinkedList getfriends() {
+    LinkedList& getfriends() {
         return friends;
     }
     string getusername() {
@@ -22,5 +22,11 @@ public:
     }
     int getage() {
         return age;
+    }
+    HashTable& getPending(){
+        return pending;
+    }
+    HashTable& getRequests(){
+        return requests;
     }
 };
