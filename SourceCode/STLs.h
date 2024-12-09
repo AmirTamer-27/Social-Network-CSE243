@@ -14,7 +14,7 @@ template <typename QueueElement>
 class Dequeue {
 
 public:
-    Dequeue(int numElements = DEFAULT_CAPACITY) : myFront(0), myBack(0) {
+    Dequeue(int numElements = DEFAULT_CAPACITY) : myFront(0), myBack(0) ,mySize(0){
         if (numElements <= 0) {
             cerr << "Error: Negative or zero capacity required -- terminating execution\n";
             exit(1);
@@ -26,7 +26,7 @@ public:
             exit(1);
         }
     }
-    Dequeue(const Dequeue& original) : myFront(original.myFront), myBack(original.myBack), myCapacity(original.myCapacity) {
+    Dequeue(const Dequeue& original) : myFront(original.myFront), myBack(original.myBack), myCapacity(original.myCapacity),mySize(original.mySize) {
         myArray = new (nothrow) QueueElement[myCapacity];
         if (myArray == 0) {
             cerr << "Error: Inadequate memory to allocate queue -- terminating execution\n";
@@ -58,6 +58,7 @@ public:
                 myArray[pos] = rhs.myArray[pos];
             }
         }
+        mySize = rhs.mySize;
         return *this;
     }
     bool empty() const {
@@ -68,11 +69,15 @@ public:
         if (newBack != myFront) { // i.e., queue isn't full
             myArray[myBack] = value;
             myBack = newBack;
+            mySize++;
         }
         else {
             cerr << "Dequeue-full! " << endl;
             exit(1);
         }
+    }
+    int size() {
+        return mySize;
     }
     void display(ostream& out) const {
         if (empty()) {
@@ -104,7 +109,10 @@ public:
     }
     void pop_front() {
         if (!empty())
+        {
             myFront = (myFront + 1) % myCapacity;
+            mySize--;
+        }
         else {
             cerr << "Dequeue Empty!" << endl;
         }
@@ -116,6 +124,7 @@ public:
                 myBack = ((myBack - 1) + myCapacity) % myCapacity;
             else
                 myBack = (myBack - 1) % myCapacity;
+            mySize--;
         }
         else {
             cerr << "Dequeue Empty!" << endl;
@@ -130,6 +139,7 @@ public:
         if (newFront != myBack) { // i.e., queue isn't full
             myFront = newFront;
             myArray[myFront] = value;
+            mySize++;
             
         }
         else {
@@ -137,7 +147,17 @@ public:
             exit(1);
         }
     }
-   
+    QueueElement get(int i)
+    {
+        int index = (myFront + i) % myCapacity;
+        if(index>=myFront and index<myBack)
+            return myArray[(myFront + i) % myCapacity];
+        else {
+            cerr << "index out of bound" << endl;
+            return myArray[(myFront + i) % myCapacity];
+        }
+
+    }
     int find(const QueueElement& value)
     {
         int i = myFront;
@@ -152,6 +172,7 @@ public:
         return -1;
     }
     QueueElement* myArray;
+    int mySize;
 private:
 #ifdef SQUEUE
     QueueElement myArray[DEFAULT_CAPACITY];
@@ -181,7 +202,10 @@ ostream& operator<< (ostream& out, const Dequeue<QueueElement>& aList) {
 template class Dequeue<int>;
 template class Dequeue<User>;
 template ostream& operator<<(ostream& out,const Dequeue<int>& aList);
-
+template <typename KeyType, typename ValueType>
+bool pairCompare(const Pair<KeyType, ValueType>& a, const Pair<KeyType, ValueType>& b) {
+    return a.first < b.first;
+}
 #endif /* QUEUE */
 #ifndef MAP_CUSTOM_H
 #define MAP_CUSTOM_H
@@ -203,14 +227,24 @@ public:
     }
     void insert(const KeyType& key, const ValueType& value) //value will be added to the initial value
     {
-        for (int i = 0;i < mySize;i++)
+        sort(data, data + mySize, pairCompare<int, int>);
+        int l = 0, r = mySize - 1, m;
+        while (l <= r)
         {
-            if (data[i].first == key)
+            m = (l + r) / 2;
+            if (data[m].first < key)
             {
-                data[i].second += value;
+                l = m + 1;
+            }
+            else if (data[m].first > key)
+                r = m - 1;
+            else
+            {
+                data[m].second += value;
                 return;
             }
         }
+        
         if (myCapacity > mySize)
         {
             data[mySize].first = key;
@@ -218,25 +252,40 @@ public:
             mySize++;
         }
     }
-    bool contains(const KeyType& key) const {
-        for (int i = 0;i < mySize;i++)
-        {
-            if (data[i].first == key)
-            {
+    bool contains(const KeyType& key)  {
+        sort(data, data + mySize, pairCompare<int, int>);
+        int l = 0, r = mySize - 1,m;
+       while(l<=r)
+       {
+           m = (l + r) / 2;
+           if (data[m].first < key)
+           {
+               l = m + 1;
+           }
+           else if (data[m].first > key)
+               r = m - 1;
+            else
                 return true;
-            
-            }
-        }
+       }
         return false;
     }
 
     const ValueType& at(const KeyType& key) const {
-        for (int i = 0;i < mySize;i++)
+        sort(data, data + mySize, pairCompare<int, int>);
+        int l = 0, r = mySize - 1, m;
+        while (l <= r)
         {
-            if (data[i].first == key)
+            m = (l + r) / 2;
+            if (data[m].first < key)
             {
-                return data[i].second;
-
+                l = m + 1;
+            }
+            else if (data[m].first > key)
+                r = m - 1;
+            else
+            {
+                
+                return data[m].second;
             }
         }
         
@@ -514,3 +563,98 @@ ostream& operator<<(ostream& out, const LinkedList& aList)
     aList.display(out);
     return out;
 }
+#ifndef HTable_hpp
+#define HTable_hpp
+#include <string>
+#include <iostream>
+using namespace std;
+
+const int TableSize = 100;
+
+class HashTable {
+private:
+    class Node {
+    public:
+        string key; // Student ID
+        string value; // Student name
+        Node* next;
+        Node() {
+            next = nullptr;
+            this->value = "-1";
+        }
+        Node(string value, string key) {
+            next = nullptr;
+            this->value = value;
+            this->key = key;
+        }
+    };
+
+    int numberOfElements;
+    Node* table[TableSize];
+    int hash(string key) {
+        int sum = 0;
+        for (int k = 0; k < key.length(); k++)
+            sum = sum + int(key[k]);
+        return  sum % TableSize;
+    }
+public:
+    HashTable() :numberOfElements(0) {
+        for (int i = 0; i < TableSize; i++)
+            table[i] = new Node();
+    }
+    void insert(string studentID, string studentName) {
+        int loc = hash(studentID);
+        if (table[loc]->value == "-1") {
+            table[loc]->value = studentName;
+            table[loc]->key = studentID;
+        }
+        else {
+            Node* ptr = table[loc];
+            while (ptr->next != nullptr)
+                ptr = ptr->next;
+            ptr->next = new Node(studentName, studentID);
+        }
+    }
+
+    void remove(string studentID) {
+        int loc = hash(studentID);
+        if (table[loc]->key == studentID) {
+            Node* ptr = table[loc]->next;
+            delete table[loc];
+            table[loc] = ptr;
+        }
+        else {
+            Node* pred;
+            Node* ptr = table[loc];
+            while (ptr->key != studentID && ptr != nullptr) {
+                pred = table[loc];
+                ptr = ptr->next;
+            }
+            if (ptr == nullptr) {
+                cout << "Item not found";
+                return;
+            }
+            else {
+                pred->next = ptr->next;
+                delete ptr;
+            }
+        }
+    }
+    void print() {
+        for (int i = 0; i < TableSize; i++) {
+            if (table[i]->value != "-1") {
+                cout << table[i]->value << " ";
+            }
+            Node* ptr = table[i]->next;
+            while (ptr != nullptr) {
+                cout << ptr->value;
+                ptr = ptr->next;
+            }
+            if (table[i]->value != "-1") {
+                cout << endl;
+            }
+        }
+    }
+};
+
+#endif /* HTable_hpp */
