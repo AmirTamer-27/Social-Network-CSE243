@@ -125,3 +125,75 @@ void Graph::send_request(const int current, const int index) {
 void Graph::removeFriend(const int current, const int index) {
     users.get(current).getfriends().erase(index);
 }
+void Graph::login() {
+    String tempUserName;
+    String tempPassword;
+    bool found = false;
+    cout << "Welcome to dr.Ashraf's Project :) " << endl;
+    do {
+        cout << "Username : ";
+        cin >> tempUserName;
+        cout << "Password : ";
+        cin >> tempPassword;
+
+        for (int i = 0; i < users.size(); i++)
+            if (users[i].getusername == tempUserName && users[i].getpassword == tempPassword) {
+                found = true;
+                return;
+            }
+        cout << "Either the username or the password are not correct , Please re-enter your data to continue....";
+    } while (!found);
+}
+
+
+void Graph::signup() {
+    String tempUserName;
+    String tempPassword;
+    String conPassword;
+    int tempAge;
+    bool correctData = false;
+    cout << "Welcome to dr.Ashraf's Project :) " << endl;
+    cout << "Please enter the following data ";
+    do {
+        cout << "Username :";//validate
+        cin >> tempUserName;
+        if (user[i].getusername != tempUserName)
+            correctData = true;
+        else {
+            cerr << "Username already exists \n";
+            cout << "Please enter another username";
+        }
+    } while (!correctData);
+    do {
+        cout << "Password :";//validate
+        cin >> tempPassword;
+        cout << "Confirm your password :";//validate
+        cin >> conPassword;
+        if (tempPassword == conPassword)
+            break;
+        else {
+            cerr << "Please enter matching passwords";
+            correctData = false;
+        }
+    } while (!correctData);
+    do {
+        cout << "Enter your age :";//validate
+        if (!(cin >> tempAge)) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout << "Invalid input. Please enter a number: ";
+            correctData = false;
+            if (tempAge < 18 && tempAge>0) {
+                cerr << "The minimum age for signing up is 18";
+                exit(-1);
+            }if (tempAge < 0) {
+                cerr << "INVALID INPUT";
+                cout << "Please enter a valid age";
+                correctData = false;
+            }
+        }while (!correctData);
+
+        User u = new User(tempUserName, tempPassword, tempAge);
+
+
+    }
