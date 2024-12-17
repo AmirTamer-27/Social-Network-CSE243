@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <iomanip>
-//#include "User.h"
+// #include "User.h"
 using namespace std;
 const int DEFAULT_CAPACITY = 10000;
 template <typename QueueElement>
@@ -169,10 +169,10 @@ public:
         }
         return -1;
     }
-    int getCapacity (){
+    int getCapacity() {
         return myCapacity;
     }
-    
+
 private:
     QueueElement* myArray;
     int mySize;
@@ -188,9 +188,9 @@ template class Dequeue<User>;
 template ostream& operator<<(ostream& out, const Dequeue<int>& aList);*/
 typedef int KeyType;
 typedef int ValueType;
-bool pairCompare(const pair<KeyType, ValueType>& a, const pair<KeyType, ValueType>& b) {
-    return a.first < b.first;
-}
+// bool pairCompare(const pair<KeyType, ValueType>& a, const pair<KeyType, ValueType>& b) {
+//     return a.first < b.first;
+// }
 
 
 const int DEFAULT_CAPACITY_map = 10000;
@@ -212,7 +212,7 @@ public:
     }
     void insert(const KeyType& key, const ValueType& value) //value will be added to the initial value
     {
-        sort(data, data + mySize - 1, pairCompare);
+        sort(data, data + mySize );
         int l = 0, r = mySize - 1, m;
         while (l <= r)
         {
@@ -239,7 +239,7 @@ public:
         }
     }
     bool contains(const KeyType& key) {
-        sort(data, data + mySize - 1, pairCompare);
+        sort(data, data + mySize );
         int l = 0, r = mySize - 1, m;
         while (l <= r)
         {
@@ -271,7 +271,7 @@ public:
 
     }
     const ValueType& at(const KeyType& key) const {
-        sort(data, data + mySize - 1, pairCompare);
+        sort(data, data + mySize );
         int l = 0, r = mySize - 1, m;
         while (l <= r)
         {
@@ -497,7 +497,7 @@ public:
             cerr << "Illegal location to insert -- " << index << endl;
             return;
         }
-        
+
         mySize++;
         LinkedList::NodePointer newPtr = new Node(dataVal), predPtr = first;
         if (index == 0)
@@ -535,7 +535,7 @@ public:
             delete ptr;
         }
     }
-    int size(){
+    int size() {
         return mySize;
     }
     int search(ElementType dataVal) {
@@ -572,7 +572,7 @@ typedef int HashElement;
 class HashTable {
 
 private:
-   
+
     class Node {
     public:
         HashElement value; // Student name
@@ -618,9 +618,10 @@ public:
     void remove(HashElement value) {
         int loc = hash(value);
         if (table[loc]->value == value) {
-            Node* ptr = table[loc]->next;
-            delete table[loc];
-            table[loc] = ptr;
+            // Node* ptr = table[loc]->next;
+            // delete table[loc];
+            // table[loc] = ptr;
+            table[loc]->value=-1;
         }
         else {
             Node* pred;
@@ -636,26 +637,28 @@ public:
             else {
                 pred->next = ptr->next;
                 delete ptr;
+
             }
         }
     }
-   /* void print(Dequeue<User> users) {
-        int count = 1;
-        for (int i = 0; i < TableSize; i++) {
-            if (table[i]->value == -1)
-                continue;
-            cout << count << ": " << users.get(table[i]->value).getusername() << endl;
-            count++;
-            if (table[i]->next != nullptr) {
-                Node* ptr = table[i]->next;
-                while (ptr != nullptr) {
-                    cout << count << " : " << ptr->value << endl;
-                    count++;
-                    ptr = ptr->next;
-                }
-            }
-        }
-    }*/
+    void print(Dequeue<int>& requestingUsers) {
+         int count = 1;
+         short x;
+         for (int i = 0; i < TableSize; i++) {
+             if (table[i]->value == -1)
+                 continue;
+             count++;
+             requestingUsers.push_back(table[i]->value);
+             if (table[i]->next != nullptr) {
+                 Node* ptr = table[i]->next;
+                 while (ptr != nullptr) {
+                     count++;
+                     requestingUsers.push_back(ptr->value);
+                     ptr = ptr->next;
+                 }
+             }
+         }
+     }
     bool found(HashElement value) {
         if (table[hash(value)]->value == -1)
             return false;
