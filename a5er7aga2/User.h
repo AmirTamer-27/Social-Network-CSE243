@@ -8,13 +8,13 @@ private:
     string username;
     string password;
     int age;
-    
+
 public:
     LinkedList friends;
     HashTable pending;
     HashTable requests;
     User() {}
-    User(string username, string password, int age) :username(username), password(password), age(age){}
+    User(string username, string password, int age) :username(username), password(password), age(age) {}
     LinkedList& getfriends() {
         return friends;
     }
@@ -33,7 +33,7 @@ public:
     HashTable& getRequests() {
         return requests;
     }
-    ~User(){
+    ~User() {
     }
 };
 #endif
