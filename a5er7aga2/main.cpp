@@ -1,6 +1,5 @@
-
 #include <iostream>
-#include "../Graph.cpp"
+#include "Graph.cpp"
 
 int main()
 {
@@ -12,7 +11,7 @@ int main()
 	User n3("mhsen", "mhsen", 19);//mozi,mike,Amir	
 	User n4("marwan", "marwan", 99);//karim	,omar
 	User n5("mike", "mike", 89);//mhsen,hadary
-	User n6("Amir","tala3",19);//Mizo,mhsen
+	User n6("Amir","tala3",19);//Mizo,mhsen,Hadary
 	User n7("Hadary","lesbab",20);//Badra,mike
 	User n8("Mizo","tala3ahh",19);//Badra,Amir
 	User n9("Omar","password",19);//Karim,marwan
@@ -31,6 +30,7 @@ int main()
 	n5.friends.insert(7, 1);
 	n6.friends.insert(7, 0);
 	n6.friends.insert(2, 1);
+	n6.friends.insert(6, 2);
 	n7.friends.insert(9, 0);
 	n7.friends.insert(4, 1);
 	n8.friends.insert(9, 0);
