@@ -33,6 +33,9 @@ public:
 int numberOfElements;
   HashTable() : numberOfElements(0) {
     table = new (nothrow) Node*[TableSize];
+    for (int i = 0; i < TableSize; ++i) {
+        table[i] = nullptr;
+    }
 }
 
 
