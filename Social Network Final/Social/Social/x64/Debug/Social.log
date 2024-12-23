@@ -1,5 +1,0 @@
-﻿  Social.cpp
-D:\books and slides\sophomore\data\Social\STLs.h(98): warning C4715: 'Dequeue<int>::front': not all control paths return a value
-D:\books and slides\sophomore\data\Social\STLs.h(264): warning C4715: 'CustomMap::second': not all control paths return a value
-D:\books and slides\sophomore\data\Social\STLs.h(272): warning C4715: 'CustomMap::first': not all control paths return a value
-  Social.vcxproj -> D:\books and slides\sophomore\data\Social\x64\Debug\Social.exe
